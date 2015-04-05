@@ -1,0 +1,311 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+	<head>
+		<title>John Altidor</title>
+		<link rel="stylesheet" type="text/css" href="styles.css" />
+		<link rel="shortcut icon" href="http://www.cs.umass.edu/sites/all/themes/compsci/images/favicon.ico" type="image/x-icon" />		
+	</head>
+	<body>
+		<div class="mainpane">
+			<div class="header">
+				<h2>John Altidor</h2>
+				<p>
+				<!-- Need some picture of myself -->
+				<img src="me_cs.jpg" alt="Me by the CS building" height="240" style="float:right; clear:all; margin-left: 30px; margin-bottom: 5px"/>
+				<table>
+					<tr><td><a href="http://www.cs.umass.edu/">School of Computer Science</a></td></tr>
+					<tr><td><a href="http://www.umass.edu/">University of Massachusetts</a></td></tr>
+					<tr><td>jaltidor [at] cs [dot] umass [dot] edu</td></tr>
+				</table>
+				</p>
+				<p>I completed my Ph.D. in Computer Science at UMass Amherst.
+				   My advisors were
+				   <a href="http://cgi.di.uoa.gr/~smaragd/">Yannis Smaragdakis</a>
+				   and
+				   <a href="https://www.cs.umass.edu/faculty/directory/wileden_jack">Jack Wileden</a>.
+				   I am now a research scientist at
+				   <a href="http://www.bbn.com/">BBN Technologies</a>.
+				</p>
+			</div>
+			<div class="research_interests">
+				<h2>Research Interests</h2>
+				<ul>
+					<li>Programming language semantics and techniques supporting software engineering.</li>
+					<li>Formal methods such as type systems for designing languages with correctness
+						and runtime guarantees at compile time.
+					</li>
+					<li>Automated proof assistants such as Twelf.</li>
+					<li>Language abstractions supporting modular programming and software reuse.</li>
+				</ul>
+			</div>
+			<!-- Research Section -->
+			<div class="projects">
+				<h2>Projects</h2>
+				<div class="project">
+					<h3 class="prjtitle">Subtyping with Generics</h3>
+					<p class="prjdesc">Many modern languages have support for
+						parametric polymorphism such as
+						<a href="http://download.oracle.com/javase/tutorial/extra/generics/index.html">Generics</a>
+						in Java.
+						Parametric polymorphism enhances the readability, maintainability,
+						and safety of programs.
+						Subtyping promotes software reuse by allowing code to be applied to
+						a larger set of terms.
+						Integrating both approaches is far from trivial.
+						For example, consider a Generic interface
+						<span class="code">List&lt;E&gt;</span>, where
+						<span class="code">E</span> is a type parameter,
+						<span class="code">List</span> is a parametric type (generic),
+						and instances of
+						<span class="code">E</span> can be read from or written to
+						instances of <span class="code">List&lt;E&gt;</span>.
+						Even if <span class="code">Dog</span> is a subtype of
+						<span class="code">Animal</span>,
+						it is <em>not</em> safe to assume that
+						<span class="code">List&lt;Dog&gt;</span> (a list of <span class="code">Dog</span>s)
+						is a <span class="code">List&lt;Animal&gt;</span> (a list of <span class="code">Animal</span>s).
+						Existing variance mechanisms enable greater subtyping between parametric types
+						but can be difficult to use and suffer from various deficiencies.
+						This project aims at providing programming language mechanisms
+						to better support subtyping with parametric polymorphism.
+					</p>
+				</div>
+				<div class="project">
+					<h3 class="prjtitle">Feature-Based CAD System Interoperability</h3>
+					<p class="prjdesc">Computer-aided design (CAD) systems are used to
+						create virtual representations of physical objects (e.g. cars, planes).
+						Interoperability of CAD systems is a major problem when enabling
+						information integration in a collaborative engineering environment.
+						Existing standard CAD data formats such as
+						<a href="http://ts.nist.gov/standards/iges/">IGES</a>
+						and
+						<a href="http://www.wikistep.org/index.php/Main_Page">STEP</a>
+						do not preserve feature information during CAD data exchange.
+						Hence, they do not enable the modification, extension, and ability
+						to perform higher-level functionality on imported CAD models from other
+						CAD systems.
+						This project aims at enabling higher-level CAD data exchange.
+					</p>
+					<ul>
+						<li>
+							<span class="pubtitle">CAD Data Exchange Software Project:</span>
+							(<a href="https://github.com/jgaltidor/cad-exchange">www</a>)
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="refpubs">
+				<h2>Publications</h2>
+				<ul>
+				  <li>
+				    <span class="smallheading">Dissertation</span>
+            <em>(Awarded 2014 Outstanding Dissertation by the School of Computer Science)</em>
+            </span>
+				  	<br/>
+						<span class="pubtitle">Subtyping with Generics: A Unified Approach</span>.
+						(<a href="dissertation.pdf">pdf</a>)
+						<br/>
+						<em>John Altidor</em>.
+					</li>
+				  <li>
+						<span class="pubtitle">Refactoring Java Generics by Inferring Wildcards, In Practice</span>.
+						(<a href="refactoring_oopsla14.pdf">paper</a>,
+						<a href="refactoring_oopsla14_slides.pdf">slides</a>)
+						<br/>
+						<em>John Altidor</em> and Yannis Smaragdakis.
+						<br/>
+						29th ACM SIGPLAN Conference on Object-Oriented Programming Systems and Applications
+						(<a href="http://2014.splashcon.org/track/oopsla2014">OOPSLA 2014</a>)
+					</li>
+					<li>
+						<span class="pubtitle">Java Wildcards Meet Definition-Site Variance</span>.
+						(<a href="varj_ecoop12.pdf">paper</a>,
+						<a href="varj_ecoop12_slides.pdf">slides</a>)
+						<br/>
+						<em>John Altidor</em>, Christoph Reichenbach, and Yannis Smaragdakis.
+						<br/>
+						26th European Conference on Object-Oriented Programming
+						(<a href="http://ecoop12.cs.purdue.edu/">ECOOP 2012</a>)
+					</li>
+					<li>
+						<span class="pubtitle">Taming the Wildcards: Combining Definition-
+							and Use-Site Variance</span>.
+						(<a href="variance_pldi11.pdf">paper</a>,
+						 <a href="variance_pldi11_slides.pdf">slides</a>)
+						<br/>
+						<em>John Altidor</em>, Shan Shan Huang, and Yannis Smaragdakis.
+						<br/>
+						ACM SIGPLAN 2011 Conference on Programming Language Design and Implementation.
+						(<a href="http://pldi11.cs.utah.edu/">PLDI 2011</a>)
+					</li>
+					<li>
+						<span class="pubtitle">A Programming Language Approach To Parametric
+						 CAD Data Exchange</span>.
+						(<a href="idetc2011.pdf">paper</a>,
+						 <a href="idetc2011_slides.pdf">slides</a>)
+						<br/>
+						<em>John Altidor</em>, Jack Wileden, Jeffrey McPherson, et al.
+						<br/>
+						ASME 2011 International Design Engineering Technical Conferences
+						(<a href="http://www.asmeconferences.org/IDETC2011/">IDETC 2011</a>)
+					</li>
+					<li>
+						<span class="pubtitle">Towards Industrial Implementation of Emerging Semantic
+							Technologies</span>.
+						(<a href="http://dx.doi.org/10.1115/DETC2011-48520">paper</a>)
+						<br/>
+						Jay Breindel, Ian Grosse, Sundar Krishnamurty, <em>John Altidor</em>, et al.
+						<br/>
+						ASME 2011 International Design Engineering Technical Conferences
+						(<a href="http://www.asmeconferences.org/IDETC2011/">IDETC 2011</a>)
+					</li>
+					<li>
+						<span class="pubtitle">Analyzing And Implementing A Feature
+							Mapping Approach To CAD System Interoperability</span>.
+						(<a href="http://dx.doi.org/10.1115/DETC2009-87539">paper</a>)
+						<br/>
+						<em>John Altidor</em>, Yiwen Wang, Jack Wileden, et al.
+						<br/>
+						ASME 2009 International Design Engineering Technical Conferences
+						(IDETC 2009)
+					</li>
+				</ul>
+			</div>
+			<div class="unrefpubs">
+				<h2>Other Documents</h2>
+				<ul>
+					<li>
+						<span class="pubtitle">Type Theoretic Foundations of
+							Programming Languages</span>.
+						(<a href="typetheory_paper.pdf">paper</a>)
+						<br/>
+						Supplementary Twelf Code:
+						(<a href="https://github.com/jgaltidor/twelf_tutorial">www</a>)
+						<br/>
+						Type Theory Tutorial Presentation:
+						(<a href="typetheory_slides.pdf">slides</a>)
+						<br/>
+						Twelf Tutorial Presentation:
+						(<a href="twelf_slides.pdf">slides</a>)
+					</li>
+					<li>
+						<span class="pubtitle">Taming the Wildcards</span>.
+						(<a href="taming_wildcards_clc12.pptx">pptx</a>)
+						<br/>
+						<a href="http://clc.cs.uiowa.edu/">CLC</a> Seminar.
+					</li>
+				<ul>
+			</div>
+			<div class="teaching">
+				<h2>Teaching Experience</h2>
+				<ul>
+					<li>Full Instructor for Programming Methodology.
+						(<a href="https://www.cs.umass.edu/drupal/ugrad-education/spring-14-course-descriptions/#220">www</a>)
+						Spring 2014.
+					</li>
+					<li>Co-Instructor for Programming Methodology.
+						(<a href="https://www.cs.umass.edu/drupal/ugrad-education/fall-13-course-descriptions/#220">www</a>)
+						Fall 2013.
+					</li>
+					<li>Instructor for Programming Language Reading and Discussion Group.
+						(<a href="https://collab.cs.umass.edu/groups/programminglanguagereadinggroup/">www</a>)
+						Spring 2012.
+					</li>
+					<li><a href="http://reu.cs.umass.edu/">REU</a> Mentoring. Summers 2013, 2011, and 2010.</li>
+					<li>Instructor for Honors Section of Programming Methodology.
+						(<a href="http://www.cs.umass.edu/drupal/ugrad-education/fall-09-course-descriptions/#220">CMPSCI 220</a>)
+						Fall 2009.
+					</li>
+					<li>Teaching Assistant for Software Development Practices.
+						(<a href="http://www.cs.iastate.edu/courses/description/ComS309.shtml">Com S 309</a>)
+						Fall 2007 - Spring 2008.
+					</li>
+				</ul>
+			</div>
+			<div class="awards">
+				<h2>Awards</h2>
+				<ul>
+					<li><a href="http://www.cs.umass.edu/oaa2011">2011 Outstanding Synthesis Award</a>.</li>
+					<li><a href="http://sites.nationalacademies.org/PGA/FordFellowships/PGA_049151">2010 Honorable Mention list</a>
+						for the Ford Fellowship.
+					</li>
+					<li>2008
+					<a href="http://www.gemfellowship.org/">GEM Fellowship</a>.
+					</li>
+				</ul>
+			</div>
+			<div class="events">
+				<h2>Professional Events Attended</h2>
+				<!-- Conferences -->
+				<h3>Conferences and Workshops</h3>
+				<ul>
+					<li>ACM SIGPLAN 2012 Conference on Programming Language Design and Implementation
+						(<a href="http://pldi12.cs.purdue.edu/">PLDI 2012</a>),
+						Beijing, China, June 2012
+					</li>
+					<li>26th European Conference on Object-Oriented Programming
+						(<a href="http://ecoop12.cs.purdue.edu/">ECOOP 2012</a>),
+						Beijing, China, June 2012
+					</li>
+					<li>39th ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages
+						(<a href="http://www.cse.psu.edu/popl/12/">POPL 2012</a>),
+						Philadelphia, PA, January 2012
+					</li>
+					<li>ACM SIGPLAN 2011 Conference on Programming Language Design and Implementation
+						(<a href="http://pldi11.cs.utah.edu/">PLDI 2011</a>),
+						San Jose, CA, June 2011
+					</li>
+					<li>2011 Federated Computing Research Conference
+						(<a href="http://www.acm.org/fcrc/">FCRC 2011</a>),
+						San Jose, CA, June 2011
+					</li>
+					<li>38th ACM SIGACT-SIGPLAN Symposium on Principles of Programming Languages
+					(<a href="http://www.cse.psu.edu/popl/11/">POPL 2011</a>),
+						Austin, TX, January 2011
+					</li>
+					<li>6th ACM SIGPLAN Workshop on Types in Language Design and Implementation
+					(<a href="http://www.mpi-sws.org/~dreyer/tldi2011/">TLDI 2011</a>),
+						Austin, TX, January 2011
+					</li>
+				</ul>
+				<!-- Summer Schools -->
+				<h3>Summer Schools</h3>
+				<ul>
+					<li>Summer School on Theory and Practice of Language Implementation
+						(<a href="http://www.cs.uoregon.edu/research/summerschool/summer09/">www</a>),
+						Eugene, OR, July 2009
+					</li>
+					<li>Summer School on Logic and Theorem Proving in Programming Languages
+						(<a href="http://www.cs.uoregon.edu/research/summerschool/summer08/">www</a>),
+						Eugene, OR, July 2008
+					</li>
+				</ul>
+				<!-- IAB Meetings -->
+				<h3>NSF Center for e-Design IAB Meetings</h3>
+				<ul>
+					<li>2010 NSF Center for e-Design IAB Meeting
+						(<a href="http://www.nsf.gov/events/event_summ.jsp?cntn_id=116597&WT.mc_id=USNSF_18">www</a>),
+						Buffalo, NY, June 2010
+					</li>
+					<li>2009 NSF Center for e-Design IAB Meeting
+						(<a href="http://www.nsf.gov/events/event_summ.jsp?cntn_id=115132">www</a>),
+						Online Meeting, September 2009
+					</li>
+					<li>2008 NSF Center for e-Design IAB Meeting
+						(<a href="http://www.nsf.gov/events/event_summ.jsp?cntn_id=112849&org=ENG">www</a>),
+						Orlando, FL, December 2008
+					</li>
+				</ul>
+			</div>
+			<div class="service">
+				<h2>Service</h2>
+				<ul>
+					<li>Graduate Employee Organization
+						(<a href="http://www.geouaw.org/">GEO</a>) Steward</li>
+					<li>Civil Rights Committee Co-Chair</li>
+					<li>ALANAA Committee Co-Chair</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+</html>

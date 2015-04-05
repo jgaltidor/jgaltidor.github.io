@@ -1,0 +1,8 @@
+%{ test_typing.elf }%
+%solve _ : of (estr (a , b , c , a , eps)) string.
+%solve _ : of (add (enat (s z)) (enat z)) num.
+
+%solve _ : of (add (enat (s z)) (enat z)) num.
+
+%solve _ : of (let (enat (s z)) ([x] add x (enat z))) num.
+

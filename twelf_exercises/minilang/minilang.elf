@@ -1,0 +1,408 @@
+%{ syntax }%
+% --------------
+%% expressions (terms)
+exp : type.  %name exp E.
+
+%% types
+typ : type.  %name typ T.
+
+%% nats
+nat : type.  %name nat N.
+z : nat.
+s : nat -> nat.
+%worlds () (nat).
+
+%% characters
+char : type.
+a : char.
+b : char.
+c : char.
+%worlds () (char).
+
+%% strings
+str : type.  %name str S.
+eps : str. %% epsilon
+%% char prepend operation
+, : char -> str -> str. %infix right 10 ,.
+%worlds () (str).
+
+%% Auxilary judgments for wrapping objects (values) as expressions
+enat : nat -> exp.
+estr : str -> exp.
+
+%% Define expressions
+add : exp -> exp -> exp.
+cat : exp -> exp -> exp.
+let : exp -> (exp -> exp) -> exp.
+len : exp -> exp.
+
+%block exp-block : block {x:exp}.
+%worlds (exp-block) (exp).
+
+%% Define types
+num : typ.
+string : typ.
+%worlds () (typ).
+
+%{ typing }%
+% --------------
+%% Typing rules (Static Semantics)
+
+%% judgment relation expression to its types.
+of : exp -> typ -> type.  %name of O.
+%mode of +E -T.
+
+of/nat: {N:nat} of (enat N) num.
+of/str: {S:str} of (estr S) string.
+
+of/add : of (add E1 E2) num
+  <- of E1 num
+  <- of E2 num.
+
+of/cat : of (cat E1 E2) string
+  <- of E1 string
+  <- of E2 string.
+
+of/len : of (len E) num <- of E string.
+
+of/let : of (let E1 ([x] E2 x)) T2
+  <- of E1 T1
+  <- ({x: exp} of x T1 -> of (E2 x) T2).
+
+%block of-block : some {T:typ} block {x: exp}{_: of x T}.
+%worlds (of-block) (of _ _).
+
+%{ evaluation }%
+% --------------
+%% Dynamic semantics
+
+%% Define auxilary definitions for computing addition and concatenation
+cadd : nat -> nat -> nat -> type.
+%mode cadd +M +N -P.
+cadd/z : cadd z N N.
+cadd/s : cadd (s M) N (s P) <- cadd M N P.
+
+%% Check cadd is a total function
+%worlds () (cadd _ _ _).
+%total M (cadd M _ _).
+
+ccat : str -> str -> str -> type.
+%mode ccat +S1 +S2 -S3.
+ccat/eps : ccat eps S S.
+ccat/,   : ccat (C , S1) S2 (C , S3) <- ccat S1 S2 S3.
+
+%% Check ccat is a total function
+%worlds () (ccat _ _ _).
+%total S (ccat S _ _).
+
+clen : str -> nat -> type.
+%mode clen +S -N.
+clen/eps : clen eps z.
+clen/,   : clen (C , S) (s N) <- clen S N.
+
+%% Check clen is a total function
+%worlds () (clen _ _).
+%total S (clen S _).
+
+
+%% Lemma needed for getting access to derivations
+%% of cadd given its inputs
+%theorem  
+cadd-total: forall {N1:nat} {N2:nat}  
+  exists {N3:nat} {P:cadd N1 N2 N3}
+   true.
+
+- : cadd-total z N N cadd/z.
+- : cadd-total (s N1) N2 (s N3) (cadd/s P)
+      <- cadd-total N1 N2 N3 P.
+%worlds () (cadd-total N1 N2 N3 N1+N2=N3).
+%total N1 (cadd-total N1 _ _ _).
+
+
+%theorem
+ccat-total: forall {S1:str} {S2:str}  
+  exists {S3:str} {P:ccat S1 S2 S3}
+   true.
+
+- : ccat-total eps S S ccat/eps.
+- : ccat-total (C , S1) S2 (C , S3) (ccat/, P)
+      <- ccat-total S1 S2 S3 P.
+%worlds () (ccat-total S1 S2 S3 S1^S2=S3).
+%total S1 (ccat-total S1 _ _ _).
+
+%theorem
+clen-total: forall {S:str}  
+  exists {N:nat} {P:clen S N}
+   true.
+- : clen-total eps z clen/eps.
+- : clen-total (C , S) (s N) (clen/, P) <- clen-total S N P.
+%worlds () (clen-total _ _ _).
+%total S (clen-total S _ _).
+
+%% Define values to allow eager evaluation and determine final state
+value: exp -> type.  %name value V.
+value/nat : {N:nat} value (enat N).
+value/str : {S:str} value (estr S).
+%worlds () (value _).
+
+%% Evaluation step
+step : exp -> exp -> type.  %name step S.
+
+%% add
+step/add1 : step (add E1 E2) (add E1' E2)
+  <- step E1 E1'.
+step/add2 : step (add (enat N1) E2) (add (enat N1) E2')
+  <- step E2 E2'.
+step/cadd : step (add (enat N1) (enat N2)) (enat N3)
+  <- cadd N1 N2 N3.
+
+%% cat
+step/cat1 : step (cat E1 E2) (cat E1' E2)
+  <- step E1 E1'.
+step/cat2 : step (cat (estr S1) E2) (cat (estr S1) E2')
+  <- step E2 E2'.
+step/ccat : step (cat (estr S1) (estr S2)) (estr S3)
+  <- ccat S1 S2 S3.
+
+%% len
+step/lenE : step (len E) (len E') <- step E E'. 
+step/lenV : step (len (estr S)) (enat N)
+  <- clen S N.
+
+%% let
+step/letE : step (let E1 ([x] E2 x)) (let E1' ([x] E2 x))
+  <- step E1 E1'.
+step/letV : step (let E1 ([x] E2 x)) (E2 E1)
+  <- value E1.
+
+%worlds () (step _ _).
+
+%{ preservation.elf }%
+% --------------
+
+% Specifying preservation theorem with less verbose syntax.
+preservation : of E T -> step E E' -> of E' T -> type.
+%mode preservation +O +S -O'.
+
+%% Proving the preservation theorem
+
+%% of/add case
+
+% Proving first case with explicit types
+
+- : {E1-num  : of E1 num}
+    {E2-num  : of E2 num}
+    {E1~>E1' : step E1 E1'}
+    preservation E1-num E1~>E1' E1'-num
+      -> preservation ((of/add E2-num E1-num)  : (of (add E1 E2) num))
+                      ((step/add1 E1~>E1')     : (step (add E1 E2) (add E1' E2)))
+                      ((of/add E2-num E1'-num) : (of (add E1' E2) num)).
+
+- : preservation
+      (of/add E2-num E1-num)
+      (step/add2 E2~>E2')
+      (of/add E2'-num E1-num)
+        <- preservation E2-num E2~>E2' E2'-num.
+
+- : preservation (of/add _ _)
+                 (step/cadd (_: cadd N1 N2 N3))
+                 (of/nat N3).
+
+%% of/cat case
+
+- : preservation
+      (of/cat E2-str E1-str)
+      (step/cat1 E1~>E1')
+      (of/cat E2-str E1'-str)
+        <- preservation E1-str E1~>E1' E1'-str.
+
+- : preservation
+      (of/cat E2-str E1-str)
+      (step/cat2 E2~>E2')
+      (of/cat E2'-str E1-str)
+        <- preservation E2-str E2~>E2' E2'-str.
+
+- : preservation (of/cat _ _)
+                 (step/ccat (_ : ccat S1 S2 S3))
+                 (of/str S3).
+
+%% of/len case
+
+- : preservation
+      (of/len E-str)
+      (step/lenE E~>E')
+      (of/len E'-str)
+        <- preservation E-str E~>E' E'-str.
+
+- : preservation (of/len _)
+                 (step/lenV (_ : clen S N))
+                 (of/nat N).
+
+%% of/let case
+
+- : preservation
+      (of/let ([x] [dx] E2-T2 x dx) E1-T1)
+      (step/letE E1~>E1')
+      (of/let ([x] [dx] E2-T2 x dx) E1'-T1)
+        <- preservation E1-T1 E1~>E1' E1'-T1.
+
+- : preservation
+      (of/let ([x] [dx] E2-T2 x dx) E1-T1)
+      (step/letV (_: value E1))
+      (E2-T2 E1 E1-T1).
+
+%block preservation-block : some {T: typ} block {x : exp}{_: of x T}.
+%worlds (preservation-block) (preservation E-T E~>EO %{=>}% EO-T).
+%total E-T (preservation E-T _ _). 
+
+%{ progress.elf }%
+% --------------
+not_stuck: exp -> type. %name not_stuck NS.
+not_stuck/val: not_stuck E <- value E.
+not_stuck/step: not_stuck E <- step E E'.
+
+%theorem  
+progress :
+  forall* {E} {T}
+  forall {O:of E T}
+  exists {NS:not_stuck E}
+  true.
+
+%% %prove 3 E-T (progress E-T _). % Twelf can't find proof. 
+
+%% Manually proving the progress theorem
+
+%% Handle trivial value case
+- : progress (of/nat N) (not_stuck/val (value/nat N)).
+- : progress (of/str S) (not_stuck/val (value/str S)).
+
+%% of/add case
+
+%% Lemma for nested case analysis (output factoring)
+%theorem  
+progress-add :
+  forall* {E1} {E2}
+  forall {O1:of E1 num} {O2:of E2 num} {NS1:not_stuck E1} {NS2:not_stuck E2}
+  exists {NS':not_stuck (add E1 E2)}
+  true.
+
+- : progress-add _ _ (not_stuck/step E1~>E1') _
+     (not_stuck/step (step/add1 E1~>E1')).
+
+- : progress-add _ _ _ (not_stuck/step E2~>E2')
+     (not_stuck/step (step/add2 E2~>E2')).
+
+- : progress-add _ _
+     (not_stuck/val (_: value (enat N1)))
+     (not_stuck/val (_: value (enat N2)))
+     (not_stuck/step (step/cadd N1+N2=N3))
+       <- cadd-total N1 N2 _ N1+N2=N3.
+
+%worlds () (progress-add  _ _ NS1 NS2 %{=>}% NS').
+%total NS1 (progress-add _ _ NS1 _ _).
+
+%% Finally prove progress for of/add
+
+- : progress
+      (of/add E2-num E1-num) NS'
+       <- progress E1-num NS1
+       <- progress E2-num NS2
+       <- progress-add E1-num E2-num NS1 NS2 NS'.
+
+
+%% of/cat case
+
+%% Lemma for nested case analysis (output factoring)
+%theorem  
+progress-cat :
+  forall* {E1} {E2}
+  forall {O1:of E1 string} {O2:of E2 string} {NS1:not_stuck E1} {NS2:not_stuck E2}
+  exists {NS':not_stuck (cat E1 E2)}
+  true.
+
+- : progress-cat _ _ (not_stuck/step E1~>E1') _
+     (not_stuck/step (step/cat1 E1~>E1')).
+
+- : progress-cat _ _ _ (not_stuck/step E2~>E2')
+     (not_stuck/step (step/cat2 E2~>E2')).
+
+- : progress-cat _ _
+     (not_stuck/val (_: value (estr N1)))
+     (not_stuck/val (_: value (estr N2)))
+     (not_stuck/step (step/ccat N1^N2=N3))
+       <- ccat-total N1 N2 _ N1^N2=N3.
+
+%worlds () (progress-cat  _ _ NS1 NS2 %{=>}% NS').
+%total NS1 (progress-cat _ _ NS1 _ _).
+
+%% Finally prove progress for of/cat
+
+- : progress
+      (of/cat E2-string E1-string) NS'
+       <- progress E1-string NS1
+       <- progress E2-string NS2
+       <- progress-cat E1-string E2-string NS1 NS2 NS'.
+
+
+
+%% of/len case
+
+%% Lemma for nested case analysis (output factoring)
+%theorem  
+progress-len :
+  forall* {E}
+  forall {O:of E string} {NS:not_stuck E}
+  exists {NS':not_stuck (len E)}
+  true.
+
+- : progress-len _
+      (not_stuck/val (_: value (estr S)))
+      (not_stuck/step (step/lenV N=|S|))
+        <- clen-total S _ N=|S|.
+
+- : progress-len _
+      (not_stuck/step E~>E')
+      (not_stuck/step (step/lenE E~>E')).
+
+%worlds () (progress-len _ NS %{=>}% NS').
+%total NS (progress-len _ NS _).
+
+%% Finally prove progress for of/len
+- : progress (of/len E-string) NS
+      <- progress E-string E-NS
+      <- progress-len E-string E-NS NS.
+
+
+
+%% of/let case
+
+%% Lemma for nested case analysis (output factoring)
+%theorem  
+progress-let :
+  forall* {E1} {T1} {E2}
+  forall {O:of E1 T1} {NS:not_stuck E1}
+  exists {NS':not_stuck (let E1 ([x] E2 x))}
+  true.
+
+- : progress-let _
+      (not_stuck/val E1-val)
+      (not_stuck/step (step/letV E1-val)).
+
+- : progress-let _
+      (not_stuck/step E1~>E1')
+      (not_stuck/step (step/letE E1~>E1')).
+
+%worlds () (progress-let _ NS %{=>}% NS').
+%total NS (progress-let _ NS _).
+
+%% Finally prove progress for of/len
+- : progress (of/let ([x] [dx] E2-T2 x dx) E1-T1) NS
+      <- progress E1-T1 E1-NS
+      <- progress-let E1-T1 E1-NS NS.
+
+%% Handled all cases for progress.
+%% Now can check proof of progress!
+
+%worlds () (progress O %{=>}% NS).
+%total O (progress O _).
+
