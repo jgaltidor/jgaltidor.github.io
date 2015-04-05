@@ -1,0 +1,37 @@
+
+Typed in of/let signature
+----------------------------
+of/let : of (let E1 ([x] E2 x)) T2
+  <- of E1 T1
+  <- ({x: exp} of x T1 -> of (E2 x) T2).
+
+
+Twelf output of of/let signature displaying implicit parameters
+-----------------------------------------------------------------
+of/let :
+   {T1:typ} {E2:exp -> exp} {T2:typ} {E1:exp}
+      ({x:exp} of x T1 -> of (E2 x) T2) -> of E1 T1
+         -> of (let E1 ([x:exp] E2 x)) T2.
+
+
+Twelf output of of/nat signature displaying implicit parameters
+-----------------------------------------------------------------
+of/nat : {N:nat} of (enat N) num.
+
+
+Twelf output of of/add signature displaying implicit parameters
+-----------------------------------------------------------------
+of/add : {E2:exp} {E1:exp} of E2 num -> of E1 num -> of (add E1 E2) num.
+
+
+Example derivation applying of/let and use of the hypothesis
+in a hypothetical judgment
+-----------------------------------------------------------------
+%solve 
+of (let (enat (s z)) ([x:exp] add x (enat z))) num.
+ OK
+_ : of (let (enat (s z)) ([x:exp] add x (enat z))) num
+   = of/let
+     ([x:exp] [o:of x num] of/add (of/nat z) o)
+     (of/nat (s z)).
+
