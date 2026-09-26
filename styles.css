@@ -72,7 +72,12 @@ h3 {
 }
 
 li {
-	padding-bottom: 8px;
+	padding-bottom: 3px;
+}
+
+.refpubs li,
+.unrefpubs li {
+	padding-bottom: 10px;
 }
 
 .pubtitle {
