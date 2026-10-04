@@ -1,3 +1,0 @@
-<homepage>/twelf_exercises/numsubtype/numsubtype_starter.elf
-
-<homepage>/twelf_exercises/minilang/minilang.elf

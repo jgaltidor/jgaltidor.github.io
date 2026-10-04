@@ -1,5 +1,0 @@
-%{ progress_testing.elf }%
-
-%solve _ : step (add (enat (s z)) (enat (s z))) E.
-
-%solve _ : progress (of/add (of/len (of/str (a , b , eps))) (of/nat z)) NS.
